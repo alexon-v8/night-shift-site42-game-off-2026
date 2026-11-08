@@ -44,10 +44,49 @@ func _init():
 	assert(valve.is_complete == true, "Valve must be complete after 3 turns")
 	print(" [PASS] Test 3: CoolantValve maintenance interaction verified.")
 
+	# Test 4: PowerCell pickup and PowerSocket insertion
+	var socket = PowerSocket.new()
+	var cell = PowerCell.new()
+	assert(socket.is_powered == false, "Socket must start unpowered")
+	var insert_res = socket.insert_cell()
+	assert(insert_res == true, "Cell must insert successfully into socket")
+	assert(socket.is_powered == true, "Socket must be powered after insertion")
+	var second_insert = socket.insert_cell()
+	assert(second_insert == false, "Socket cannot accept a second power cell")
+	print(" [PASS] Test 4: PowerCell & PowerSocket circuit restoration verified.")
+
+	# Test 5: OverrideConsole activation
+	var console = OverrideConsole.new()
+	assert(console.is_activated == false, "Console must start unactivated")
+	console.interact()
+	assert(console.is_activated == true, "Console must be activated after interaction")
+	print(" [PASS] Test 5: Containment Wing 04 OverrideConsole latch override verified.")
+
+	# Test 6: Polaroid Camera Tool aim and photograph capture
+	var cam_tool = PolaroidCameraTool.new()
+	assert(cam_tool.is_aiming == false, "Camera tool must start lowered")
+	cam_tool.set_aim(true)
+	assert(cam_tool.is_aiming == true, "Camera tool must be aiming")
+	var photo = cam_tool.snap_photo("02:15 AM")
+	assert(photo.has("title"), "Photo must have title metadata")
+	assert(photo["time"] == "02:15 AM", "Photo timestamp must match facility time")
+	print(" [PASS] Test 6: Polaroid Camera tool viewfinder and snapshot capture verified.")
+
+	# Test 7: Full shift loop completion & extraction punch-out
+	var state = {"finished": false}
+	fac.shift_completed.connect(func(): state["finished"] = true)
+	fac.complete_shift()
+	assert(state["finished"] == true, "Full graveyard shift completion must trigger extraction!")
+	print(" [PASS] Test 7: Full 06:00 AM extraction and time clock completion verified.")
+
 	# Cleanup
 	fac.free()
 	door.free()
 	valve.free()
+	socket.free()
+	cell.free()
+	console.free()
+	cam_tool.free()
 
-	print(">>> ALL 3 SITE-42 MECHANICS TESTS PASSED CLEANLY! <<<")
+	print(">>> ALL 7 SITE-42 MECHANICS TESTS PASSED CLEANLY! <<<")
 	quit(0)

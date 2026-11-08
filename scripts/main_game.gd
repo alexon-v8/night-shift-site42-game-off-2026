@@ -20,10 +20,13 @@ func _ready():
 		player.camera_tool.photo_taken.connect(ui.on_photo_taken)
 		player.camera_tool.camera_aim_toggled.connect(ui.set_aiming)
 
-	# Connect containment console if present
+	# Connect containment override console if present
 	var console = get_node_or_null("Containment04/OverrideConsole")
-	if console and console.has_signal("valve_stabilized"):
-		console.valve_stabilized.connect(func(): facility_manager.resolve_ticket(3))
+	if console:
+		if console.has_signal("console_activated"):
+			console.console_activated.connect(func(): facility_manager.resolve_ticket(3))
+		elif console.has_signal("valve_stabilized"):
+			console.valve_stabilized.connect(func(): facility_manager.resolve_ticket(3))
 
 func _input(event: InputEvent):
 	if event.is_action_pressed("toggle_help") and ui:

@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3]
 
-[ext_resource type="Script" path="res://scripts/coolant_valve.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/override_console.gd" id="1_override"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
 albedo_color = Color(0.18, 0.15, 0.18, 1)
@@ -38,12 +38,11 @@ shape = SubResource("BoxShape3D_floor")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
 mesh = SubResource("BoxMesh_floor")
 
-[node name="OverrideConsole" type="StaticBody3D" parent="."]
+[node name="OverrideConsole" type="StaticBody3D" parent="." groups=["containment_console"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -3.5)
 collision_layer = 3
 collision_mask = 3
-script = ExtResource("1_script")
-turns_required = 2
+script = ExtResource("1_override")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="OverrideConsole"]
 shape = SubResource("BoxShape3D_console")

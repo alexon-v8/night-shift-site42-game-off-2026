@@ -72,3 +72,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, -12)
 
 [node name="Containment04" parent="." instance=ExtResource("12_cont")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 0)
+
+[node name="ContainmentVoid" parent="." instance=ExtResource("9_void")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -14, 0, 0)
+visible = false
+
+[node name="ShiftDoorway_Containment" parent="." instance=ExtResource("7_door")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -7, 0, 0)
+doorway_id = "door_containment"
+doorway_name = "CONTAINMENT WING 04"
+default_destination_path = NodePath("../Containment04")
+shifted_destination_path = NodePath("../ContainmentVoid")

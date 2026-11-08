@@ -93,6 +93,11 @@ func _physics_process(delta: float):
 		held_power_cell.update_held_position(hold_pos)
 
 func _handle_interaction():
+	if camera_tool and camera_tool.is_aiming:
+		var time_str = facility_ref.get_formatted_time() if facility_ref else "00:00 AM"
+		camera_tool.snap_photo(time_str)
+		return
+
 	if not interact_raycast or not interact_raycast.is_colliding():
 		return
 		
@@ -102,15 +107,18 @@ func _handle_interaction():
 	if held_power_cell:
 		if col is PowerSocket:
 			if col.insert_cell():
+				interact_raycast.remove_exception(held_power_cell)
 				held_power_cell.queue_free()
 				held_power_cell = null
 				if facility_ref:
 					facility_ref.resolve_ticket(2)
 		else:
+			interact_raycast.remove_exception(held_power_cell)
 			held_power_cell.release()
 			held_power_cell = null
 	elif col is PowerCell:
 		held_power_cell = col
+		interact_raycast.add_exception(held_power_cell)
 		held_power_cell.grab(self)
 		if FacilitySoundManager.instance:
 			FacilitySoundManager.instance.play("footstep_metal", 1.5, -4.0)
@@ -118,6 +126,10 @@ func _handle_interaction():
 		col.interact()
 		if col.is_complete and facility_ref:
 			facility_ref.resolve_ticket(1)
+	elif col is OverrideConsole or col.is_in_group("containment_console"):
+		col.interact()
+		if facility_ref:
+			facility_ref.resolve_ticket(3)
 	elif col is MaintenanceTerminal:
 		col.interact()
 	elif col.name == "TimeClock" or col.is_in_group("exit_clock"):
